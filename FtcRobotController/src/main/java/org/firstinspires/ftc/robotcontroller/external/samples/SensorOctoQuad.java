@@ -22,6 +22,7 @@
 package org.firstinspires.ftc.robotcontroller.external.samples;
 
 import com.qualcomm.hardware.digitalchickenlabs.OctoQuad;
+import com.qualcomm.hardware.digitalchickenlabs.OctoQuadBase;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
@@ -55,11 +56,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * See the sensor's product page: https://www.tindie.com/products/35114/
  */
 @TeleOp(name = "OctoQuad Basic", group="OctoQuad")
-@Disabled
+//@Disabled
 public class SensorOctoQuad extends LinearOpMode {
 
     // Identify which encoder OctoQuad inputs are connected to each odometry pod.
-    private final int ODO_LEFT  = 0; // Facing forward direction on left side of robot (Axial motion)
+    private final int ODO_LEFT  = 7; // Facing forward direction on left side of robot (Axial motion)
     private final int ODO_RIGHT = 1; // Facing forward direction on right side or robot (Axial motion)
     private final int ODO_PERP  = 2; // Facing perpendicular direction at the center of the robot (Lateral motion)
 
@@ -85,7 +86,7 @@ public class SensorOctoQuad extends LinearOpMode {
         // Reverse the count-direction of any encoder that is not what you require.
         // e.g. if you push the robot forward and the left encoder counts down, then reverse it so it counts up.
         octoquad.setSingleEncoderDirection(ODO_LEFT,  OctoQuad.EncoderDirection.REVERSE);
-        octoquad.setSingleEncoderDirection(ODO_RIGHT, OctoQuad.EncoderDirection.FORWARD);
+        octoquad.setSingleEncoderDirection(ODO_RIGHT, OctoQuad.EncoderDirection.REVERSE);
         octoquad.setSingleEncoderDirection(ODO_PERP,  OctoQuad.EncoderDirection.FORWARD);
 
         // Any changes that are made should be saved in FLASH just in case there is a sensor power glitch.

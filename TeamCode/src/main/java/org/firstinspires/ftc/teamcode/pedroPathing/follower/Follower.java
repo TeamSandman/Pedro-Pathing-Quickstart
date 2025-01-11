@@ -731,12 +731,26 @@ public class Follower {
         Vector forwardHeadingVector = new Vector(1.0, poseUpdater.getPose().getHeading());
         double forwardVelocity = MathFunctions.dotProduct(forwardHeadingVector, velocity);
         double forwardDistanceToGoal = MathFunctions.dotProduct(forwardHeadingVector, distanceToGoalVector);
+        double forwardZeroPowerLocal = forwardZeroPowerAcceleration;
+
+        if (forwardDistanceToGoal < 0) {
+            forwardZeroPowerLocal = Math.abs(forwardZeroPowerLocal);
+        } else if (forwardDistanceToGoal > 0) {
+            forwardZeroPowerLocal = -Math.abs(forwardZeroPowerLocal);
+        }
         double forwardVelocityGoal = MathFunctions.getSign(forwardDistanceToGoal) * Math.sqrt(Math.abs(-2 * currentPath.getZeroPowerAccelerationMultiplier() * forwardZeroPowerAcceleration * forwardDistanceToGoal));
         double forwardVelocityZeroPowerDecay = forwardVelocity - MathFunctions.getSign(forwardDistanceToGoal) * Math.sqrt(Math.abs(Math.pow(forwardVelocity, 2) + 2 * forwardZeroPowerAcceleration * forwardDistanceToGoal));
 
         Vector lateralHeadingVector = new Vector(1.0, poseUpdater.getPose().getHeading() - Math.PI / 2);
         double lateralVelocity = MathFunctions.dotProduct(lateralHeadingVector, velocity);
         double lateralDistanceToGoal = MathFunctions.dotProduct(lateralHeadingVector, distanceToGoalVector);
+        double lateralZeroPowerLocal = lateralZeroPowerAcceleration;
+
+        if (lateralDistanceToGoal < 0) {
+            lateralZeroPowerLocal = Math.abs(lateralZeroPowerLocal);
+        } else if (lateralDistanceToGoal > 0) {
+            lateralZeroPowerLocal = -Math.abs(lateralZeroPowerLocal);
+        }
         double lateralVelocityGoal = MathFunctions.getSign(lateralDistanceToGoal) * Math.sqrt(Math.abs(-2 * currentPath.getZeroPowerAccelerationMultiplier() * lateralZeroPowerAcceleration * lateralDistanceToGoal));
         double lateralVelocityZeroPowerDecay = lateralVelocity - MathFunctions.getSign(lateralDistanceToGoal) * Math.sqrt(Math.abs(Math.pow(lateralVelocity, 2) + 2 * lateralZeroPowerAcceleration * lateralDistanceToGoal));
 
