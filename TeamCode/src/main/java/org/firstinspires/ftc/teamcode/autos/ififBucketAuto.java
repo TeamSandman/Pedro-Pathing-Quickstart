@@ -27,9 +27,9 @@ public class  ififBucketAuto extends OpMode {
     private PathChain preload, score2, eat2, score3, backOff;
     private final Pose startPose = new Pose(8.3,111.3,Math.toRadians(90));//x was 6.7291
     private final Pose scorePose = new Pose(14.4,129.6-3,Math.toRadians(135));
-    private final Pose pickup1 = new Pose(35.4-5,122-.75,Math.toRadians(178-2));//was x=66.8411, y=25.7944; then 65.7196,28.4861, then (61.9065,31.4019)
+    private final Pose pickup1 = new Pose(35.4-5,122-.5,Math.toRadians(178-2));//was x=66.8411, y=25.7944; then 65.7196,28.4861, then (61.9065,31.4019)
     private final Pose pickup1Control = new Pose(21.98,123.6,Math.toRadians(180));//was 2.6916,53.1589
-    private final Pose pickup2 = new Pose(34.99-4.5, 132.1-2, Math.toRadians(178-4));//was x=68.6355, y=23.3271, then (77.3832, 24.8972), then 69.0841, 20.8598, then (61.0093, 18.3925), then (62.1308, 14.3551), then (60.1121, 17.4953)
+    private final Pose pickup2 = new Pose(34.99-4.5, 132.1-3.5, Math.toRadians(178-4));//was x=68.6355, y=23.3271, then (77.3832, 24.8972), then 69.0841, 20.8598, then (61.0093, 18.3925), then (62.1308, 14.3551), then (60.1121, 17.4953)
     private final Pose End = new Pose(20, 125, Math.toRadians(135));
 
     //private final Pose sample3 = new Pose(57.4206-1, 10.9907+1, Math.toRadians(180)); //was (x,y)(71.3271, 9.1963), then (71.1028, 10.9907), then (62.8037, 9.4206), then (59.8879, 9.8692), then (59.43925, 10.5421)
@@ -104,7 +104,7 @@ public class  ififBucketAuto extends OpMode {
                 break;
             case 102:
                 if(pathTimer.getElapsedTimeSeconds()>.9){
-                    jamocha.liftStowed();
+                    jamocha.liftTransfer();
                     setPathState(103);
                 }
                 break;
@@ -188,7 +188,7 @@ public class  ififBucketAuto extends OpMode {
                 break;
             case 221:
                 if(pathTimer.getElapsedTimeSeconds()>.9){
-                    jamocha.liftStowed();
+                    jamocha.liftTransfer();
                     setPathState(222);
                 }
                 break;

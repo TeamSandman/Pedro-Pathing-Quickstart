@@ -30,19 +30,20 @@ public class noahSpecimenAuto extends OpMode {
     private final Pose sample1 = new Pose(60.1121-1,30.9533,Math.toRadians(180));//was x=66.8411, y=25.7944; then 65.7196,28.4861, then (61.9065,31.4019)
     private final Pose sample1Control = new Pose(5.8318,48.6729,Math.toRadians(180));//was 2.6916,53.1589
     private final Pose observation1 = new Pose(7.4019+3, 18.1682, Math.toRadians(180));//was 7.1776, 20.8598
-    private final Pose sample2 = new Pose(57.4206-2, 18.1682+1, Math.toRadians(180));//was x=68.6355, y=23.3271, then (77.3832, 24.8972), then 69.0841, 20.8598, then (61.0093, 18.3925), then (62.1308, 14.3551), then (60.1121, 17.4953)
+    private final Pose sample2 = new Pose(57.4206-2.25, 18.1682+1, Math.toRadians(180));//was x=68.6355, y=23.3271, then (77.3832, 24.8972), then 69.0841, 20.8598, then (61.0093, 18.3925), then (62.1308, 14.3551), then (60.1121, 17.4953)
     private final Pose sample2Control = new Pose(54.9533,42.8411,Math.toRadians(180));//was (71.9999,35.6636), then (60.3364,32.9720), then (59.9495,39.5215), then (61.9065,43.2897)
     private final Pose observation2 = new Pose(9.8692+2, 13.0093, Math.toRadians(180));//was (10.5421, 10.7664)
-    private final Pose sample3 = new Pose(57.4206-3, 10.9907+2.89, Math.toRadians(175+3)); //was (x,y)(71.3271, 9.1963), then (71.1028, 10.9907), then (62.8037, 9.4206), then (59.8879, 9.8692), then (59.43925, 10.5421)
+    private final Pose sample3 = new Pose(57.4206-3.225, 10.9907+2.89, Math.toRadians(175+3)); //was (x,y)(71.3271, 9.1963), then (71.1028, 10.9907), then (62.8037, 9.4206), then (59.8879, 9.8692), then (59.43925, 10.5421)
     private final Pose sample3Control = new Pose(57.1963,25.7944,Math.toRadians(180));//was (80.0748,24.4486)
     private final Pose observation3 = new Pose(8.9720+7.5,10.9907,Math.toRadians(180)); //was (x,y) (9.8692,8.2991), then (10.7664,9.4206), then (10.0935,9.1963)
     //private final Pose geraldPickup = new Pose(10,24,Math.toRadians(180));
     private final Pose eatPose = new Pose(7,24+3,Math.toRadians(170));//was 180
+    private final Pose eatPose3 = new Pose(7,24+3,Math.toRadians(170+3));//was 180
     private final Pose eatPoseControl = new Pose(27.5,18.8,Math.toRadians(180));
-    private final Pose specimen1 = new Pose(40.374-6.5,70+8,Math.toRadians(0));
+    private final Pose specimen1 = new Pose(40.374-3.5,70+8,Math.toRadians(0));
     private final Pose specimen1Control = new Pose(33.87,89.72,Math.toRadians(0));
     private final Pose specimen1Control2 = new Pose(17.05, 84.79, Math.toRadians(0));
-    private final Pose specimen2 = new Pose(40.375-7.5,66+8,Math.toRadians(0));
+    private final Pose specimen2 = new Pose(40.375-6.25  ,66+8,Math.toRadians(0));
     private final Pose specimen3 = new Pose(40.375-3.5,61,Math.toRadians(0));
     private final Pose specimen4 = new Pose(40.375-3.5,58,Math.toRadians(0));
 
@@ -54,7 +55,7 @@ public class noahSpecimenAuto extends OpMode {
 
     public void pathBuilder(){
         preload = follower.pathBuilder()
-                .addPath(new BezierLine(new Point (startPose.getX()-1.5, startPose.getY()-0),new Point(scorePose)))
+                .addPath(new BezierLine(new Point (startPose.getX()-1, startPose.getY()-0),new Point(scorePose)))
                 .setConstantHeadingInterpolation((startPose.getHeading()))
                         .build();
 
@@ -87,7 +88,7 @@ public class noahSpecimenAuto extends OpMode {
                 .build();
 
         eat1 = follower.pathBuilder()
-                .addPath(new BezierCurve(new Point(observation3), new Point(eatPoseControl), new Point(eatPose)))
+                .addPath(new BezierCurve(new Point(observation3), new Point(eatPoseControl), new Point(eatPose.getX()+1, eatPose.getY())))
                 .setConstantHeadingInterpolation(observation3.getHeading())
                 .build();
 
@@ -102,7 +103,7 @@ public class noahSpecimenAuto extends OpMode {
                 .build();
 
         eat2 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(specimen1), new Point(eatPose)))
+                .addPath(new BezierLine(new Point(specimen1), new Point(eatPose.getX()-1, eatPose.getY())))
                 .setLinearHeadingInterpolation(specimen1.getHeading(), eatPose.getHeading(), 0.4)
                 .build();
 
@@ -112,8 +113,8 @@ public class noahSpecimenAuto extends OpMode {
                 .build();
 
         eat3 = follower.pathBuilder()
-                .addPath(new BezierLine(new Point(specimen2), new Point(eatPose.getX()-8, eatPose.getY()+5)))
-                .setLinearHeadingInterpolation(specimen2.getHeading(), eatPose.getHeading())
+                .addPath(new BezierLine(new Point(specimen2), new Point(eatPose3.getX()-7.5, eatPose3.getY()+5)))
+                .setLinearHeadingInterpolation(specimen2.getHeading(), eatPose3.getHeading())
                 .build();
         hang3 = follower.pathBuilder()
                 .addPath(new BezierLine(new Point(eatPose), new Point(specimen3)))
@@ -142,7 +143,7 @@ public class noahSpecimenAuto extends OpMode {
                 jamocha.horizontalSlidesHome();
                 jamocha.fourBarPitchTransfer();
                 jamocha.fourBarTransfer();
-                jamocha.liftHighChamber(); //was -1410
+                jamocha.liftAutoHighChamber(); //was -1410
                 pathTimer.resetTimer();
                 setPathState(1000);
                 break;
@@ -223,8 +224,13 @@ public class noahSpecimenAuto extends OpMode {
                 }
                 break;
             case 71:
-                if(pathTimer.getElapsedTimeSeconds()>1.25){
+                if(pathTimer.getElapsedTimeSeconds()>1.99) {
                     jamocha.clawClosed();
+                    setPathState(72);
+                }
+                break;
+            case 72:
+                if (pathTimer.getElapsedTimeSeconds()>.1){
                     jamocha.liftHighChamber();
                     setPathState(8);
                 }
@@ -243,7 +249,7 @@ public class noahSpecimenAuto extends OpMode {
                     }
                 break;
             case 82:
-                if(pathTimer.getElapsedTimeSeconds()>1.25){ //was1.5
+                if(pathTimer.getElapsedTimeSeconds()>.55){ //was1.5
                     jamocha.clawOpen();
                     setPathState(9);
                 }
@@ -262,8 +268,13 @@ public class noahSpecimenAuto extends OpMode {
                 }
                 break;
             case 92:
-                if (pathTimer.getElapsedTimeSeconds()>1.25){
+                if (pathTimer.getElapsedTimeSeconds()>1) {
                     jamocha.clawClosed();
+                    setPathState(93);
+                }
+                    break;
+                    case 93:
+                        if(pathTimer.getElapsedTimeSeconds()>.3){
                     jamocha.liftHighChamber();
                     setPathState(10);
                 }
@@ -282,13 +293,13 @@ public class noahSpecimenAuto extends OpMode {
                 }
                 break;
             case 1002:
-                if(pathTimer.getElapsedTimeSeconds()>1.25){
+                if(pathTimer.getElapsedTimeSeconds()>.75){
                     jamocha.clawOpen();
                     setPathState(11);
                 }
                 break;
             case 11:
-                if(pathTimer.getElapsedTimeSeconds()>2.75){
+                if(pathTimer.getElapsedTimeSeconds()>1.75){
                     follower.setMaxPower(0.85);
                     follower.followPath(eat3);
                     jamocha.liftStowed();
@@ -296,8 +307,13 @@ public class noahSpecimenAuto extends OpMode {
                 }
                 break;
             case 111:
-                if(pathTimer.getElapsedTimeSeconds()>1.25){
+                if(pathTimer.getElapsedTimeSeconds()>1) {
                     jamocha.clawClosed();
+                    setPathState(112);
+                }
+                 break;
+                    case 112:
+                        if (pathTimer.getElapsedTimeSeconds()>.3){
                     jamocha.liftHighChamber();
                     setPathState(12);
                 }

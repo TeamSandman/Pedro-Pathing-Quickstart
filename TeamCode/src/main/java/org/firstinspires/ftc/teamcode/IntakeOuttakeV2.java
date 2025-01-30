@@ -6,10 +6,9 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
-public class IntakeOuttake {
+public class IntakeOuttakeV2 {
 
-
-// Four Bar Servos (Control Hub Ports 2 [FourBarLeft], 3 [FourBarRight], 4[FourBarPitch]
+    // Four Bar Servos (Control Hub Ports 2 [FourBarLeft], 3 [FourBarRight], 4[FourBarPitch]
     private Servo FourBarLeft;
 
     private Servo FourBarRight;
@@ -17,26 +16,27 @@ public class IntakeOuttake {
     private Servo FourBarPitch;
 
 
-// Intake Servos (Control Hub Ports 0 [IntakeLeft], 1 [IntakeRight])
+    // Intake Servos (Control Hub Ports 0 [IntakeLeft], 1 [IntakeRight])
     private CRServo IntakeLeft;
 
     private CRServo IntakeRight;
 
 
-// Horizontal Slides Motor (Expansion Hub Port 0)
+    // Horizontal Slides Motor (Expansion Hub Port 0)
     private DcMotorEx HorizontalSlides;
 
 
-// Outtake Claw (Expansion Hub Ports 0 [ClawLeft], 1 [ClawRight], 2 [OuttakeArm])
-    private Servo ClawLeft;
+    // Outtake Claw (Expansion Hub Ports 0 [ClawLeft], 1 [ClawRight], 2 [OuttakeArm])
+   // private Servo ClawLeft;
 
-    private Servo ClawRight;
+    private Servo Claw;
 
     private Servo OuttakeArm;
 
+    private Servo OuttakeTurret;
 
 
-//Vertical Slides Motor ( Expansion Hub Port 1)
+    //Vertical Slides Motor ( Expansion Hub Port 1)
     private DcMotorEx VerticalSlides;
 
 
@@ -55,41 +55,41 @@ public class IntakeOuttake {
         HorizontalSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         HorizontalSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
-//Intake Sample
+    //Intake Sample
     public void intakeIn(){
-       IntakeLeft.setPower(1);
-       IntakeRight.setPower(-1);
+        IntakeLeft.setPower(1);
+        IntakeRight.setPower(-1);
     }
-//Spit out Sample
+    //Spit out Sample
     public void intakeOut(){
         IntakeLeft.setPower(-.25-.1);
         IntakeRight.setPower(.25+.1);
     }
-//Turn intake off
+    //Turn intake off
     public void intakeOff(){
         IntakeLeft.setPower(0);
         IntakeRight.setPower(0);
     }
-//Lower four bar to intake sample
+    //Lower four bar to intake sample
     public void fourBarDown(){
         FourBarLeft.setPosition(0);//was.09
         FourBarRight.setPosition(1);//was.47
     }
-//Extend four bar to search for sample
+    //Extend four bar to search for sample
     public void fourBarSearch(){
         FourBarLeft.setPosition(.1+.05);//was .19
         FourBarRight.setPosition(.9-.05);//was .37
     }
 
     public void fourBarTransfer(){
-        FourBarLeft.setPosition(.2+.025);
-        FourBarRight.setPosition(.8-.025);
+        FourBarLeft.setPosition(.2+.025-.045);
+        FourBarRight.setPosition(.8-.025+.045);
     }
 
-//Retract four bar
+    //Retract four bar
     public void fourBarStowed(){
-      FourBarLeft.setPosition(.26);//was .35
-      FourBarRight.setPosition(.74);//was .2
+        FourBarLeft.setPosition(.26);//was .35
+        FourBarRight.setPosition(.74);//was .2
     }
 
 
@@ -101,7 +101,7 @@ public class IntakeOuttake {
         FourBarPitch.setPosition(.65);
     }
     public void fourBarPitchTransfer(){
-        FourBarPitch.setPosition(.75-.05);
+        FourBarPitch.setPosition(.75+.1);
     }
 
     public void horizontalSlidesHome(){
@@ -123,19 +123,20 @@ public class IntakeOuttake {
     }
 
     public void initOuttake(HardwareMap hwMap){
-       ClawLeft = hwMap.get(Servo.class, "ClawLeft");
-       ClawRight = hwMap.get(Servo.class, "ClawRight");
-       OuttakeArm = hwMap.get(Servo.class, "OuttakeArm");
+       // ClawLeft = hwMap.get(Servo.class, "ClawLeft");
+        Claw = hwMap.get(Servo.class, "Claw");
+        OuttakeArm = hwMap.get(Servo.class, "OuttakeArm");
+        OuttakeTurret = hwMap.get(Servo.class, "OuttakeTurret");
 
-       VerticalSlides = hwMap.get(DcMotorEx.class, "VerticalSlides");
+        VerticalSlides = hwMap.get(DcMotorEx.class, "VerticalSlides");
 
-       VerticalSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-       VerticalSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-       VerticalSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        VerticalSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        VerticalSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        VerticalSlides.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
     }
 
-    public void armTransfer(){
+   /* public void armTransfer(){
         OuttakeArm.setPosition(1);
     }
 
@@ -150,21 +151,59 @@ public class IntakeOuttake {
     public void armStowed(){
         OuttakeArm.setPosition(.05);
     }
+*/
+    public void armTurretForward(){
+        OuttakeTurret.setPosition(1-.05);
+    }
+
+    public void armTurretBackward(){
+        OuttakeTurret.setPosition(0);
+    }
+
+    public void armTransfer (){
+        //this will change based on how it gets attached
+        OuttakeArm.setPosition(1-.6);
+    }
+
+    /*public void armScore(){
+        OuttakeArm.setPosition(.75);
+    }*/
+
+    public void armHorizontal (){
+        //for pick up on wall either side
+        //higher number = further up
+        OuttakeArm.setPosition(.7-.05);
+    }
+
+    public void armPickup (){
+        //for pick up on wall either side
+        //higher number = further up
+        OuttakeArm.setPosition(.7);
+    }
+
+    public void armChamber (){
+        //45 degree to place at chamber
+        OuttakeArm.setPosition(.55-.15);
+    }
+
+    public void armStowed (){
+        OuttakeArm.setPosition(.85);
+    }
 
     public void clawOpen(){
-        ClawLeft.setPosition(.6);
-        ClawRight.setPosition(.4);
+
+        Claw.setPosition(.76);  //tune this
     }
 
     public void clawClosed(){
-        ClawLeft.setPosition(.24-.05);
-        ClawRight.setPosition(.76);
+
+        Claw.setPosition(.4); //tune this
     }
 
     public void liftStowed(){
-       VerticalSlides.setTargetPosition(0);
-       VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-       VerticalSlides.setPower(.35);
+        VerticalSlides.setTargetPosition(0);
+        VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        VerticalSlides.setPower(.35);
     }
 
 
@@ -192,7 +231,7 @@ public class IntakeOuttake {
     }
 
     public void liftHighChamber(){
-        VerticalSlides.setTargetPosition(-1410);
+        VerticalSlides.setTargetPosition(-800);
         VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         VerticalSlides.setPower(.5);
     }
@@ -214,6 +253,12 @@ public class IntakeOuttake {
         VerticalSlides.setPower(.5);
     }
 
+    public void liftSwing(){
+        VerticalSlides.setTargetPosition(-200-150);
+        VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        VerticalSlides.setPower(.5);
+    }
+
     public void liftManualControl(double speed){
         VerticalSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         VerticalSlides.setPower(speed);
@@ -223,8 +268,17 @@ public class IntakeOuttake {
         VerticalSlides.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
+    public boolean liftHasArrived() {
+        if (Math.abs(VerticalSlides.getTargetPosition() - VerticalSlides.getCurrentPosition()) < 50) {
 
+            return true;
 
+        } else {
+            return false;
+        }
 
-
+    }
 }
+
+
+
