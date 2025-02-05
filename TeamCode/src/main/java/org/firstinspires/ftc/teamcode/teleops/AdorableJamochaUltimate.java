@@ -31,7 +31,8 @@ public class AdorableJamochaUltimate  extends OpMode {
     private DcMotorEx rightRear;
 
     enum State {
-        //START,
+        //START,\
+        MANUAL_CONTROL,
         DRIVE_ARM_BACK,
         DRIVE_ARM_FORWARD,
 
@@ -128,8 +129,19 @@ public class AdorableJamochaUltimate  extends OpMode {
 
         //Prescore States
 
-
+        if (gamepad1.back) {
+            state = AdorableJamochaUltimate.State.MANUAL_CONTROL;
+        }
+        if (gamepad1.start) {
+            state = State.DRIVE_ARM_BACK;
+        }
         switch (state){
+            case MANUAL_CONTROL:
+                jamocha.liftManualControl(gamepad2.right_stick_y);
+                jamocha.horizontalSlidesManualControl(gamepad2.left_stick_y);
+                if (gamepad2.back){
+                state = State.DRIVE_ARM_BACK;
+                }
             case DRIVE_ARM_BACK:
                 //four bar
                 jamocha.fourBarTransfer();
@@ -175,6 +187,7 @@ public class AdorableJamochaUltimate  extends OpMode {
                     state = State.PRE_HIGH_CHAMBER_NEUTRAL;
                 }
 
+
                 break;
 
             case DRIVE_ARM_FORWARD:
@@ -207,7 +220,18 @@ public class AdorableJamochaUltimate  extends OpMode {
                 if (gamepad2.b){
                     state = State.DRIVE_ARM_BACK;
                 }
-
+                if (gamepad2.dpad_left){
+                    state = State.PRE_LOW_BASKET_NEUTRAL;
+                }
+                if (gamepad2.dpad_right){
+                    state = State.PRE_HIGH_BASKET_NEUTRAL;
+                }
+                if (gamepad2.dpad_down){
+                    state = State.PRE_LOW_CHAMBER_NEUTRAL;
+                }
+                if (gamepad2.dpad_up){
+                    state = State.PRE_HIGH_CHAMBER_NEUTRAL;
+                }
                 break;
 
             case SPECIMEN_FORWARD:
@@ -499,7 +523,9 @@ public class AdorableJamochaUltimate  extends OpMode {
                 jamocha.clawOpen();
 
                 //lift
-                jamocha.liftSwing();
+                //jamocha.liftSwing();
+
+                jamocha.liftPreTransfer();
 
                 TurretStateForward = false;
 
@@ -540,12 +566,13 @@ public class AdorableJamochaUltimate  extends OpMode {
                 jamocha.clawOpen();
 
                 //lift
-                jamocha.liftSwing();
+                //jamocha.liftSwing();
+                jamocha.liftPreTransfer();
 
                 TurretStateForward = false;
 
                 if (!gamepad2.x){
-                    state = State.INTAKE_EXPEL;
+                    state = State.INTAKE_SEARCH;
                 }
 
                 break;
@@ -571,7 +598,8 @@ public class AdorableJamochaUltimate  extends OpMode {
                 jamocha.clawOpen();
 
                 //lift
-                jamocha.liftSwing();
+                //jamocha.liftSwing();
+                jamocha.liftPreTransfer();
 
                 TurretStateForward = false;
 
@@ -602,7 +630,8 @@ public class AdorableJamochaUltimate  extends OpMode {
                 jamocha.clawOpen();
 
                 //lift
-                jamocha.liftSwing();
+                //jamocha.liftSwing();
+                jamocha.liftPreTransfer();
 
                 TurretStateForward = false;
 
@@ -636,7 +665,8 @@ public class AdorableJamochaUltimate  extends OpMode {
                 jamocha.clawOpen();
 
                 //lift
-                jamocha.liftSwing();
+                //jamocha.liftSwing();
+                jamocha.liftPreTransfer();
 
                 TurretStateForward = false;
 
@@ -1557,7 +1587,7 @@ public class AdorableJamochaUltimate  extends OpMode {
                     state = State.DROP_HIGH_CHAMBER_FORWARD;
                 }
                 if (gamepad2.x){
-                    state = State.PRE_HIGH_BASKET_FORWARD;
+                    state = State.PRE_HIGH_CHAMBER_FORWARD;
                 }
 
                 break;
@@ -1692,7 +1722,7 @@ public class AdorableJamochaUltimate  extends OpMode {
                 //lift
                 jamocha.liftHighChamber();
 
-                TurretStateForward = true;
+                TurretStateForward = false ;
 
                 if (gamepad2.a){
                     state = State.DRIVE_ARM_FORWARD;

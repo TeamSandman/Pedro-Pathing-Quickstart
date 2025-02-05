@@ -164,6 +164,7 @@ public class JamochaRemote  extends OpMode {
         }
 
         switch (state){
+
             case DRIVE:
                 //four bar
                 jamocha.fourBarTransfer();

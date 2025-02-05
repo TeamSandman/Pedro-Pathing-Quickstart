@@ -208,4 +208,12 @@ public class FollowerConstants {
 
     // Feed forward constant added on to the secondary drive PIDF
     public static double secondaryDrivePIDFFeedForward = 0.01;
+
+    public static boolean useVoltagecompAuto = true;
+    public static boolean useVoltagecompTele = false;
+
+    //nominal voltage is the voltage you tuned on
+    public static double nominalVoltage = 13.5;
+
+    public static double cacheInvalidateSeconds = .5;
 }

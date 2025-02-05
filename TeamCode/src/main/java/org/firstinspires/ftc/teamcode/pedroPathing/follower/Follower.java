@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.pedroPathing.follower;
 
+import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.cacheInvalidateSeconds;
 import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.drivePIDFFeedForward;
 import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.drivePIDFSwitch;
 import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.forwardZeroPowerAcceleration;
@@ -18,6 +19,9 @@ import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstan
 import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.useSecondaryDrivePID;
 import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.useSecondaryHeadingPID;
 import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.useSecondaryTranslationalPID;
+import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.nominalVoltage;
+import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.useVoltagecompAuto;
+import static org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants.useVoltagecompTele;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -26,6 +30,8 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
@@ -142,6 +148,14 @@ public class Follower {
     public static boolean useHeading = true;
     public static boolean useDrive = true;
 
+    // Voltage comp made by teams i dont feel like naming
+    private static int voltageIndex = 0;
+    private boolean cached = false;
+
+    private VoltageSensor voltageSensor;
+    public double voltage = 0;
+    private final ElapsedTime voltageTimer = new ElapsedTime();
+
     /**
      * This creates a new Follower given a HardwareMap.
      *
@@ -161,6 +175,9 @@ public class Follower {
     public void initialize() {
         driveVectorScaler = new DriveVectorScaler(FollowerConstants.frontLeftVector);
         poseUpdater = new PoseUpdater(hardwareMap);
+
+        voltageSensor = hardwareMap.getAll(VoltageSensor.class).get(voltageIndex);
+        voltageTimer.reset();
 
         leftFront = hardwareMap.get(DcMotorEx.class, leftFrontMotorName);
         leftRear = hardwareMap.get(DcMotorEx.class, leftRearMotorName);
@@ -470,9 +487,14 @@ public class Follower {
                     drivePowers = driveVectorScaler.getDrivePowers(MathFunctions.scalarMultiplyVector(getTranslationalCorrection(), holdPointTranslationalScaling), MathFunctions.scalarMultiplyVector(getHeadingVector(), holdPointHeadingScaling), new Vector(), poseUpdater.getPose().getHeading());
 
                     limitDrivePowers();
-
                     for (int i = 0; i < motors.size(); i++) {
-                        motors.get(i).setPower(drivePowers[i]);
+                        double voltageNormalized = getVoltageNormalized();
+
+                        if (useVoltagecompAuto) {
+                            motors.get(i).setPower(drivePowers[i] * voltageNormalized);
+                        } else {
+                            motors.get(i).setPower(drivePowers[i]);
+                        }
                     }
                 } else {
                     if (isBusy) {
@@ -483,9 +505,14 @@ public class Follower {
                         drivePowers = driveVectorScaler.getDrivePowers(getCorrectiveVector(), getHeadingVector(), getDriveVector(), poseUpdater.getPose().getHeading());
 
                         limitDrivePowers();
-
                         for (int i = 0; i < motors.size(); i++) {
-                            motors.get(i).setPower(drivePowers[i]);
+                            double voltageNormalized = getVoltageNormalized();
+
+                            if (useVoltagecompAuto) {
+                                motors.get(i).setPower(drivePowers[i] * voltageNormalized);
+                            } else {
+                                motors.get(i).setPower(drivePowers[i]);
+                            }
                         }
                     }
                     if (currentPath.isAtParametricEnd()) {
@@ -526,10 +553,14 @@ public class Follower {
 
             drivePowers = driveVectorScaler.getDrivePowers(getCentripetalForceCorrection(), teleopHeadingVector, teleopDriveVector, poseUpdater.getPose().getHeading());
 
-            limitDrivePowers();
-
             for (int i = 0; i < motors.size(); i++) {
-                motors.get(i).setPower(drivePowers[i]);
+                double voltageNormalized = getVoltageNormalized();
+
+                if (useVoltagecompTele) {
+                    motors.get(i).setPower(drivePowers[i] * voltageNormalized);
+                } else {
+                    motors.get(i).setPower(drivePowers[i]);
+                }
             }
         }
     }
@@ -1035,5 +1066,25 @@ public class Follower {
      */
     public void resetIMU() {
         poseUpdater.resetIMU();
+    }
+
+    public double getVoltage() {
+        if(voltageTimer.seconds() > cacheInvalidateSeconds && cacheInvalidateSeconds >= 0){
+            clearCache();
+        }
+        if(!cached) {
+            cached = true;
+            return voltage = voltageSensor.getVoltage();
+        } else {
+            return voltage;
+        }
+    }
+
+    public double getVoltageNormalized() {
+        return nominalVoltage / getVoltage();
+    }
+
+    private void clearCache() {
+        cached = false;
     }
 }

@@ -62,8 +62,8 @@ public class IntakeOuttakeV2 {
     }
     //Spit out Sample
     public void intakeOut(){
-        IntakeLeft.setPower(-.25-.1);
-        IntakeRight.setPower(.25+.1);
+        IntakeLeft.setPower(-.25); //was-.1
+        IntakeRight.setPower(.25); //was+.1
     }
     //Turn intake off
     public void intakeOff(){
@@ -82,8 +82,8 @@ public class IntakeOuttakeV2 {
     }
 
     public void fourBarTransfer(){
-        FourBarLeft.setPosition(.2+.025-.045);
-        FourBarRight.setPosition(.8-.025+.045);
+        FourBarLeft.setPosition(.2+.025-.05);
+        FourBarRight.setPosition(.8-.025+.05);
     }
 
     //Retract four bar
@@ -101,7 +101,10 @@ public class IntakeOuttakeV2 {
         FourBarPitch.setPosition(.65);
     }
     public void fourBarPitchTransfer(){
-        FourBarPitch.setPosition(.75+.1);
+        FourBarPitch.setPosition(.75+.075);
+    }
+    public void fourBarPitchStart (){
+        FourBarPitch.setPosition(.7);
     }
 
     public void horizontalSlidesHome(){
@@ -162,7 +165,7 @@ public class IntakeOuttakeV2 {
 
     public void armTransfer (){
         //this will change based on how it gets attached
-        OuttakeArm.setPosition(1-.6);
+        OuttakeArm.setPosition(.95);
     }
 
     /*public void armScore(){
@@ -213,7 +216,7 @@ public class IntakeOuttakeV2 {
         VerticalSlides.setPower(.35);
     }
     public void liftTransfer(){
-        VerticalSlides.setTargetPosition(-100 +60);
+        VerticalSlides.setTargetPosition(-450);
         VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         VerticalSlides.setPower(.5);
     }
@@ -236,7 +239,7 @@ public class IntakeOuttakeV2 {
         VerticalSlides.setPower(.5);
     }
     public void liftAutoHighChamber(){
-        VerticalSlides.setTargetPosition(-1470);
+        VerticalSlides.setTargetPosition(-825);
         VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         VerticalSlides.setPower(.5);
     }
@@ -259,6 +262,11 @@ public class IntakeOuttakeV2 {
         VerticalSlides.setPower(.5);
     }
 
+    public void liftPreTransfer(){
+        VerticalSlides.setTargetPosition(-600);
+        VerticalSlides.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        VerticalSlides.setPower(.5);
+    }
     public void liftManualControl(double speed){
         VerticalSlides.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         VerticalSlides.setPower(speed);
